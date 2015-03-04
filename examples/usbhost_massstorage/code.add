@@ -1,0 +1,111 @@
+INCLUDE[START]
+#if (USBHOSTMASSSTORAGE_ENABLED == ON)
+    #include "usbhostmassstorage.h"
+#endif
+
+#if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTMASSSTORAGE_ENABLED == ON))
+    #include "ff.h" //used with USB Mass Storage
+#endif
+INCLUDE[STOP]
+VAR[START]
+
+
+#if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTMASSSTORAGE_ENABLED == ON))
+    FATFS fatfs[1];      // used for USB MassStorage & Filesystem
+    FATFS *fs;           // used for USB MassStorage & Filesystem
+    char_t* path = "0:"; // used for USB MassStorage & Filesystem
+    FILINFO finfo;       // used for USB MassStorage & Filesystem
+    DIR dirs;            // used for USB MassStorage & Filesystem
+    DWORD P1 = 0;        // used for USB MassStorage & Filesystem
+    DWORD clust = 0;     // used for USB MassStorage & Filesystem
+    DWORD total = 0;     // used for USB MassStorage & Filesystem
+    DWORD free = 0;      // used for USB MassStorage & Filesystem
+
+    boolean_t bHostMassStorageConnected = FALSE;
+#endif
+  
+VAR[STOP]
+MAIN[START]
+    #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTMASSSTORAGE_ENABLED == ON))
+        UsbHostMassStorage_RegisterDriver();
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+        
+        #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTMASSSTORAGE_ENABLED == ON))
+        /* USB Host MassStorage Driver API */
+        if (UsbHostMassStorage_DriverActive())
+        {
+            if (bHostMassStorageConnected == FALSE)
+            {
+              bHostMassStorageConnected = TRUE;
+              #ifdef __UART_H__
+              puts("\r\n>> MassStorage Connected <<\r\n");
+                
+              puts("Loading USB Mass Storage Application\r\n");
+              puts("\r\nContents:\r\n");
+              puts("-----------------------------------------\r\n");
+              #endif /*  __UART_H__ */
+              
+              delay(10000); // wait a moment
+              while((UsbHostMassStorage_StorageApiInit() != 0) && (UsbHostMassStorage_DriverActive()));
+	          if (UsbHostMassStorage_DriverActive())
+              {
+                  f_mount(P1,fatfs);
+                  if (f_opendir(&dirs, path) == FR_OK) 
+                    {
+                        //i = strlen(path);
+                        while ((f_readdir(&dirs, &finfo) == FR_OK) && finfo.fname[0]) 
+                        {
+                            if (finfo.fattrib & AM_DIR)
+                            {
+                                #ifdef __UART_H__
+                                puts("[DIR] ");
+                                puts((char*)finfo.fname);
+                                puts("\r\n");
+                                #endif /*  __UART_H__ */
+                   
+                            } 
+                               else 
+                               {
+                                  #ifdef __UART_H__
+                                  puts("      ");
+                                  puts((char*)finfo.fname);
+                                  puts("     ");
+                                  putdec(finfo.fsize);
+                                  puts(" ");   
+                                  puts("byte");               
+                                  puts("\r\n");
+                                  #endif /*  __UART_H__ */
+                               }
+                        }
+                    }
+                    f_getfree (path, &clust, &fs);
+                    total = ((fs->max_clust - 2) * fs->csize) / 2;
+                    free = (clust * fs->csize) / 2;
+                    #ifdef __UART_H__
+                    puts("\r\n");
+                    puts("-----------------------------------------\r\n");
+                    putdec(total / 1024);
+                    puts(" MB total;");
+                    putdec(free / 1024);
+                    puts(" MB free\r\n");  
+                    puts("\r\n\r\n\r\n"); 
+    
+                  
+                    puts("\r\n>>> Please remove now the USB Device <<<\r\n");
+                    #endif /*  __UART_H__ */
+              }
+            }
+        } else
+        {
+            if (bHostMassStorageConnected == TRUE)
+            {
+                bHostMassStorageConnected = FALSE;
+                #ifdef __UART_H__
+                puts("\r\n>> MassStorage Disconnected <<\r\n");
+                #endif /*  __UART_H__ */
+            }
+        } /* end if .. else UsbHostMassStorage_DriverActive() */
+        #endif /* __USBHOSTMASSSTORAGE_H__ */
+MAINLOOP[STOP]

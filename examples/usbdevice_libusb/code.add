@@ -1,0 +1,136 @@
+VAR[START]
+
+/*      START GLOBAL VARIABLES FOR LibUsb EXAMPLE       */
+
+ uint8_t* pu8BufferLibUsb;
+ const uint8_t pu8TestLibUsb[11] = "Testmessage";
+ uint32_t u32ReceivedLengthLibUsb;
+ uint8_t pu8OutBufferLibUsb[10];
+ uint8_t u8ButtonsLibUsb,u8ButtonsLibUsbTemp;
+ uint16_t u16AdcTemp;
+/*      END GLOBAL VARIABLES FOR LibUsb EXAMPLE        */
+
+VAR[STOP]
+MAIN[START]
+MAIN[STOP]
+MAINLOOP[START]
+
+
+        /**************************************************************************************************/
+        /*                                                                                                */
+        /* START  LibUsb  EXAMPLE USAGE                                                                   */
+        /*                                                                                                */
+        /**************************************************************************************************/
+        #if (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON)
+        /* stores pointer to received data; returns 0 if nothing was received */
+        u32ReceivedLengthLibUsb = UsbDeviceLibUsb_GetReceivedDataEndpoint1(&pu8BufferLibUsb); 
+
+        /* if data was received */
+        if (u32ReceivedLengthLibUsb > 0)              
+        {
+           switch(pu8BufferLibUsb[0])
+           {
+               case 0x55: // if first byte of received data is 0x55, return prestored data
+                   UsbDeviceLibUsb_SendDataVia2((stc_usbn_t*)&USB0,(uint8_t*)pu8TestLibUsb,11,UsbPOLL);
+                   break;
+                   
+               #ifdef _SK_FM3_48PMC_USBSTICK_
+               case 0x66:    
+                     LED_DUTY(LED_RED,pu8BufferLibUsb[1]);
+                     LED_DUTY(LED_GREEN,pu8BufferLibUsb[2]);
+                     LED_DUTY(LED_BLUE,pu8BufferLibUsb[3]);
+                     break;
+               #endif
+               
+               #ifdef _SEVENSEG_API_MSC_ // board support for 7 segment display was added
+               case 0x77:    
+                   SEVENSEG_NUMBER(pu8BufferLibUsb[1]);
+                   break;
+               #endif
+               
+               #ifdef _SK_FM3_48PMC_USBSTICK_
+               case 0xaa:
+                     u16AdcTemp = SensorAdc_Read(pu8BufferLibUsb[1]);
+                     pu8BufferLibUsb[0] = 0xAA;
+                     pu8BufferLibUsb[1] = (uint8_t)((u16AdcTemp >> 8) & 0xFF);
+                     pu8BufferLibUsb[2] = (uint8_t)((u16AdcTemp) & 0xFF);
+                     UsbDeviceLibUsb_SendDataVia2((stc_usbn_t*)&USB0,pu8BufferLibUsb,3,UsbPOLL);
+                     break;
+               #endif
+
+               #ifdef _SK_FM3_48PMC_USBSTICK_
+               case 0xff: 
+                     Uart_Puts(0,(char_t*)(pu8BufferLibUsb + 1));
+                     Uart_Puts(0,"\n");
+                     break;
+               #endif
+               
+               default:   // if first byte of received data is "any", echo received data
+                   UsbDeviceLibUsb_SendDataVia2((stc_usbn_t*)&USB0,pu8BufferLibUsb,u32ReceivedLengthLibUsb,UsbPOLL); //echo received data
+                   break;
+           }
+        }
+        #ifdef _SK_FM3_48PMC_USBSTICK_
+               u8ButtonsLibUsbTemp = 0;
+               if (BUTTON_CENTER_PRESSED())
+               {
+                   u8ButtonsLibUsbTemp += 1;
+                   u8ButtonsLibUsbTemp += 2;
+               }
+               if (u8ButtonsLibUsbTemp != u8ButtonsLibUsb)
+               {
+                   u8ButtonsLibUsb = u8ButtonsLibUsbTemp;
+                   pu8OutBufferLibUsb[0] = 0xBB;
+                   pu8OutBufferLibUsb[1] = u8ButtonsLibUsb;
+                   UsbDeviceLibUsb_SendDataVia2((stc_usbn_t*)&USB0,pu8OutBufferLibUsb,2,UsbPOLL);
+               }
+        #endif
+        #if (defined(BUTTON_CENTER_PRESSED) && !defined(__BOARDDEF_H__)) || (BUTTON_CENTER_ENABLED == 1)
+            u8ButtonsLibUsbTemp = 0;
+            if (BUTTON_CENTER_PRESSED())
+            {
+                u8ButtonsLibUsbTemp += 1;
+                u8ButtonsLibUsbTemp += 2;
+            }
+            if (u8ButtonsLibUsbTemp != u8ButtonsLibUsb)
+            {
+                u8ButtonsLibUsb = u8ButtonsLibUsbTemp;
+                pu8OutBufferLibUsb[0] = 0xBB;
+                pu8OutBufferLibUsb[1] = u8ButtonsLibUsb;
+                UsbDeviceLibUsb_SendDataVia2((stc_usbn_t*)&USB0,pu8OutBufferLibUsb,2,UsbPOLL);
+            }
+         #endif    
+		 
+         #if ((defined(BUTTON_LEFT_PRESSED) || defined(BUTTON_RIGHT_PRESSED)) && !defined(__BOARDDEF_H__)) || ((BUTTON_LEFT_ENABLED == 1) || (BUTTON_RIGHT_ENABLED == 1))
+                 u8ButtonsLibUsbTemp = 0;
+				 
+				 #if defined(BUTTON_LEFT_PRESSED)
+                     if (BUTTON_LEFT_PRESSED())
+                     {
+                         u8ButtonsLibUsbTemp += 1;
+                     }
+			     #endif
+				 
+				 #if defined(BUTTON_RIGHT_PRESSED)
+                     if (BUTTON_RIGHT_PRESSED())
+                     {
+                         u8ButtonsLibUsbTemp += 2;
+                     }
+                     if (u8ButtonsLibUsbTemp != u8ButtonsLibUsb)
+                     {
+                         u8ButtonsLibUsb = u8ButtonsLibUsbTemp;
+                         pu8OutBufferLibUsb[0] = 0xBB;
+                         pu8OutBufferLibUsb[1] = u8ButtonsLibUsb;
+                         UsbDeviceLibUsb_SendDataVia2((stc_usbn_t*)&USB0,pu8OutBufferLibUsb,2,UsbPOLL);
+                     }
+			    #endif
+        #endif
+        #endif
+        /**************************************************************************************************/
+        /*                                                                                                */
+        /* END  LibUsb  EXAMPLE USAGE                                                                     */
+        /*                                                                                                */
+        /**************************************************************************************************/
+
+
+MAINLOOP[STOP]

@@ -1,0 +1,283 @@
+/*******************************************************************************
+* Copyright (C) 2013 Spansion LLC. All Rights Reserved. 
+*
+* This software is owned and published by: 
+* Spansion LLC, 915 DeGuigne Dr. Sunnyvale, CA  94088-3453 ("Spansion").
+*
+* BY DOWNLOADING, INSTALLING OR USING THIS SOFTWARE, YOU AGREE TO BE BOUND 
+* BY ALL THE TERMS AND CONDITIONS OF THIS AGREEMENT.
+*
+* This software contains source code for use with Spansion 
+* components. This software is licensed by Spansion to be adapted only 
+* for use in systems utilizing Spansion components. Spansion shall not be 
+* responsible for misuse or illegal use of this software for devices not 
+* supported herein.  Spansion is providing this software "AS IS" and will 
+* not be responsible for issues arising from incorrect user implementation 
+* of the software.  
+*
+* SPANSION MAKES NO WARRANTY, EXPRESS OR IMPLIED, ARISING BY LAW OR OTHERWISE,
+* REGARDING THE SOFTWARE (INCLUDING ANY ACOOMPANYING WRITTEN MATERIALS), 
+* ITS PERFORMANCE OR SUITABILITY FOR YOUR INTENDED USE, INCLUDING, 
+* WITHOUT LIMITATION, THE IMPLIED WARRANTY OF MERCHANTABILITY, THE IMPLIED 
+* WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE OR USE, AND THE IMPLIED 
+* WARRANTY OF NONINFRINGEMENT.  
+* SPANSION SHALL HAVE NO LIABILITY (WHETHER IN CONTRACT, WARRANTY, TORT, 
+* NEGLIGENCE OR OTHERWISE) FOR ANY DAMAGES WHATSOEVER (INCLUDING, WITHOUT 
+* LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, 
+* LOSS OF BUSINESS INFORMATION, OR OTHER PECUNIARY LOSS) ARISING FROM USE OR 
+* INABILITY TO USE THE SOFTWARE, INCLUDING, WITHOUT LIMITATION, ANY DIRECT, 
+* INDIRECT, INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES OR LOSS OF DATA, 
+* SAVINGS OR PROFITS, 
+* EVEN IF SPANSION HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+* YOU ASSUME ALL RESPONSIBILITIES FOR SELECTION OF THE SOFTWARE TO ACHIEVE YOUR
+* INTENDED RESULTS, AND FOR THE INSTALLATION OF, USE OF, AND RESULTS OBTAINED 
+* FROM, THE SOFTWARE.  
+*
+* This software may be replicated in part or whole for the licensed use, 
+* with the restriction that this Disclaimer and Copyright notice must be 
+* included with each copy of this software, whether used in part or whole, 
+* at all times.  
+*/
+/************************************************************************/
+/** \file UsbDescriptors.h
+ **
+ ** USB Descriptors File
+ **
+ ** History:
+ **   - 2013-4-23  1.0  MSc  Automatically Created by FME USB Descriptors Manager 
+ *****************************************************************************/
+
+#ifndef __USBDESCRIPTORS_H__
+#define __USBDESCRIPTORS_H__
+
+/*****************************************************************************/
+/* Include files                                                             */
+/*****************************************************************************/
+
+
+
+/*****************************************************************************/
+/* Global pre-processor symbols/macros ('#define')                           */
+/*****************************************************************************/
+
+#define USB_DEVDESC_SIZE 18
+#define USB_CNFGDESC_SIZE 41
+#define USB_RPTDESC_SIZE 29    /// only used with HID
+#define USB_FUNC_EP0_SIZE 64
+#define CLASSNAME "UsbDeviceHidCom"
+
+
+/*****************************************************************************/
+/* Global type definitions ('typedef')                                       */
+/*****************************************************************************/
+
+#define USBDESCRIPTORS_STRINGDESCRIPTOR_COUNT (uint32_t)(sizeof(pstcStringDescriptors) / sizeof(pstcStringDescriptors[0]))
+#define USBDESCRIPTORS_REPORTDESCRIPTOR_LENGTH (uint32_t)(sizeof(au8ReportDescriptor) / sizeof(au8ReportDescriptor[0]))
+
+
+
+
+/*****************************************************************************/
+/* Global variable declarations ('extern', definition in C source)           */
+/*****************************************************************************/
+
+
+const uint8_t au8DeviceDescriptor[18] = 
+{
+    ///DEVICE DESCRIPTOR
+    0x12,    ///bLength: Length of this descriptor
+    0x01,    ///bDescriptorType: Device Descriptor Type
+    0x01,    ///bcdUSB: USB Version
+    0x01,    ///bcdUSB: USB Version
+    0x00,    ///bDeviceClass: Class Code: SEE_INTERFACE_DESCRIPTOR
+    0x00,    ///bDeviceSubClass: Sub Class Code
+    0x00,    ///bDeviceProtocol: Protocol Code
+    0x40,    ///bMaxPacketSize0: Maximum size of endpoint 0
+    0x6A,    ///idVendor: Vendor ID
+    0x1A,    ///idVendor: Vendor ID
+    0x02,    ///idProduct: Product ID
+    0x20,    ///idProduct: Product ID
+    0x00,    ///bcdDevice: Release Number
+    0x01,    ///bcdDevice: Release Number
+    0x01,    ///iManufacture: String-Index of Manufacture
+    0x02,    ///iProduct: String-Index of Product
+    0x00,    ///iSerialNumber: String-Index of Serial Number
+    0x01    ///bNumConfigurations: Number of possible configurations
+};
+
+const uint8_t au8ConfigDescriptor[93] =
+{        ///CONFIG DESCRIPTOR(1)
+        0x09,    ///bLength: Length of this descriptor
+        0x02,    ///bDescriptorType: Config Descriptor Type
+        0x5D,    ///wTotalLength: Total Length with all interface- and endpoint descriptors
+        0x00,    ///wTotalLength: Total Length with all interface- and endpoint descriptors
+        0x03,    ///bNumInterfaces: Number of interfaces
+        0x01,    ///iConfigurationValue: Number of this configuration
+        0x00,    ///iConfiguration: String index of this configuration
+        0x00,    ///bmAttributes: Bus-Powered, Remote-Wakeup not supported
+        0x1F,    ///MaxPower: (in 2mA)	
+            ///INTERFACE DESCRIPTOR(1)
+            0x09,    ///bLength: Length of this descriptor
+            0x04,    ///bDescriptorType: Interface Descriptor Type
+            0x00,    ///bInterfaceNumber: Interface Number
+            0x00,    ///bAlternateSetting: Alternate setting for this interface
+            0x02,    ///bNumEndpoints: Number of endpoints in this interface excluding endpoint 0
+            0x03,    ///iInterfaceClass: Class Code: HID
+            0x00,    ///iInterfaceSubClass: SubClass Code
+            0x00,    ///bInterfaceProtocol: Protocol Code
+            0x04,    ///iInterface: String index
+                ///HID DESCRIPTOR(0)
+                0x09,    ///bLength: Length of this descriptor
+                0x21,    ///bDescriptorType: Endpoint Descriptor Type
+                0x11,    ///bEndpointAddress: Endpoint address (OUT,EP1)
+                0x01,    ///bmAttributes: Transfer Type: ISOCHRONOUS_TRANSFER
+                0x00,    ///wMaxPacketSize: Endpoint Size
+                0x01,    ///wMaxPacketSize: Endpoint Size
+                0x22,    ///bIntervall: Polling Intervall
+                0x1D,    ///ReportDesc. Size
+                0x00,    ///ReportDesc. Size
+                ///ENDPOINT DESCRIPTOR(0)
+                0x07,    ///bLength: Length of this descriptor
+                0x05,    ///bDescriptorType: Endpoint Descriptor Type
+                0x81,    ///bEndpointAddress: Endpoint address (IN,EP1)
+                0x03,    ///bmAttributes: Transfer Type: INTERRUPT_TRANSFER
+                0x40,    ///wMaxPacketSize: Endpoint Size
+                0x00,    ///wMaxPacketSize: Endpoint Size
+                0x01,    ///bIntervall: Polling Intervall
+                ///ENDPOINT DESCRIPTOR(1)
+                0x07,    ///bLength: Length of this descriptor
+                0x05,    ///bDescriptorType: Endpoint Descriptor Type
+                0x02,    ///bEndpointAddress: Endpoint address (OUT,EP2)
+                0x03,    ///bmAttributes: Transfer Type: INTERRUPT_TRANSFER
+                0x40,    ///wMaxPacketSize: Endpoint Size
+                0x00,    ///wMaxPacketSize: Endpoint Size
+                0x01,    ///bIntervall: Polling Intervall
+        /* Interface Association Descriptor: CDC Function 1*/ 
+	0x08,             //sizeof(USB_IAD_DSC), // Size of this descriptor in bytes 
+	0x0B,             // Interface assocication descriptor type 
+	0x01,                // The first associated interface 
+	0x02,                // Number of contiguous associated interface 
+	0x02,             // bInterfaceClass of the first interface 
+	0x02,             // bInterfaceSubclass of the first interface 
+	0x01,             // bInterfaceProtocol of the first interface 
+	0x05,             // Interface string index
+        
+        ///NEW INTERFACE DESCRIPTOR
+        0x09,        ///bLength: Length of this descriptor
+        0x04,        ///bDescriptorType: Interface Descriptor Type
+        0x01,        ///bInterfaceNumber: Interface Number
+        0x00,        ///bAlternateSetting: Alternate setting for this interface
+        0x01,        ///bNumEndpoints: Number of endpoints in this interface excluding endpoint 0
+        0x02,        ///iInterfaceClass: Class Code: CDC CLASS
+        0x02,        ///iInterfaceSubClass: SubClass ABSTRACT (MODEM)
+        0x01,        ///bInterfaceProtocol: Protocol Code AT-COMMANDS
+        0x00,        ///iInterface: String index
+
+        /* CDC Class-Specific Descriptors */
+            //NEW FUNCTION DESCRIPTOR
+            0x05,    ///bLength: Length of this descriptor
+            0x24,    ///bDescriptorType: Class Specific Interface Descriptor Type
+            0x06,    ///bDescriptorSubtype: Union Functional descriptor
+            0x00,    ///Master Interface (Control)
+            0x01,    ///Slave Interface (Data)
+    
+            ///NEW ENDPOINT DESCRIPTOR
+            0x07,        ///bLength: Length of this descriptor
+            0x05,        ///bDescriptorType: Endpoint Descriptor Type
+            0x83,        ///bEndpointAddress: Endpoint address (IN,EP3)
+            0x03,        ///bmAttributes: Transfer Type: INTERRUPT_TRANSFER
+            0x40, 0x00,  ///wMaxPacketSize: Number of endpoints in this interface excluding endpoint 0
+            0xFF,         ///bIntervall: Polling Intervall
+
+        ///NEW INTERFACE DESCRIPTOR
+        0x09,        ///bLength: Length of this descriptor
+        0x04,        ///bDescriptorType: Interface Descriptor Type
+        0x02,        ///bInterfaceNumber: Interface Number
+        0x00,        ///bAlternateSetting: Alternate setting for this interface
+        0x02,        ///bNumEndpoints: Number of endpoints in this interface excluding endpoint 0
+        0x0A,        ///iInterfaceClass: Class Code: VIRTUAL_COMM
+        0x00,        ///iInterfaceSubClass: SubClass Code
+        0x00,        ///bInterfaceProtocol: Protocol Code
+        0x00,        ///iInterface: String index
+
+            ///NEW ENDPOINT DESCRIPTOR
+            0x07,        ///bLength: Length of this descriptor
+            0x05,        ///bDescriptorType: Endpoint Descriptor Type
+            0x04,        ///bEndpointAddress: Endpoint address (OUT,EP4)
+            0x02,        ///bmAttributes: Transfer Type: BULK_TRANSFER
+            0x40, 0x00,  ///wMaxPacketSize: Number of endpoints in this interface excluding endpoint 0
+            0x00,         ///bIntervall: Polling Intervall
+
+            ///NEW ENDPOINT DESCRIPTOR
+            0x07,        ///bLength: Length of this descriptor
+            0x05,        ///bDescriptorType: Endpoint Descriptor Type
+            0x85,        ///bEndpointAddress: Endpoint address (IN,EP5)
+            0x02,        ///bmAttributes: Transfer Type: BULK_TRANSFER
+            0x40, 0x00,  ///wMaxPacketSize: Number of endpoints in this interface excluding endpoint 0
+            0x00,         ///bIntervall: Polling Intervall
+};
+
+
+
+const uint8_t au8ReportDescriptor0[29] =
+{
+    /// REPORT DESCRIPTOR 
+    0x06,    ///// Usage Page (Vendor Defined Page 1)
+    0x00,    ///// Usage Page (Vendor Defined Page 1)
+    0xFF,    ///// Usage Page (Vendor Defined Page 1)
+    0x09,    ///// Usage (Vendor Usage 1)
+    0x01,    ///// Usage (Vendor Usage 1)
+    0xA1,    ///// Collection (Application)
+    0x01,    ///// Collection (Application)
+    0x19,    /////      Usage Minimum 
+    0x01,    /////      Usage Minimum 
+    0x29,    /////      Usage Maximum 	//64 input usages total (1 to 64)
+    0x3F,    /////      Usage Maximum 	//64 input usages total (1 to 64)
+    0x15,    /////      Logical Minimum (data bytes in the report may have minimum value = 0x00)
+    0x00,    /////      Logical Minimum (data bytes in the report may have minimum value = 0x00)
+    0x26,    /////      Logical Maximum (data bytes in the report may have maximum value = 0x00FF = unsigned 255)
+    0xFF,    /////      Logical Maximum (data bytes in the report may have maximum value = 0x00FF = unsigned 255)
+    0x00,    /////      Logical Maximum (data bytes in the report may have maximum value = 0x00FF = unsigned 255)
+    0x75,    /////      Report Size: 8-bit field size
+    0x08,    /////      Report Size: 8-bit field size
+    0x95,    /////      Report Count: Make sixty-four 8-bit fields (the next time the parser hits an "Input", "Output", or "Feature" item)
+    0x40,    /////      Report Count: Make sixty-four 8-bit fields (the next time the parser hits an "Input", "Output", or "Feature" item)
+    0x91,    /////      Input (Data, Array, Abs): Instantiates input packet fields based on the above report size, count, logical min/max, and usage.
+    0x00,    /////      Input (Data, Array, Abs): Instantiates input packet fields based on the above report size, count, logical min/max, and usage.
+    0x19,    /////      Usage Minimum 
+    0x01,    /////      Usage Minimum 
+    0x29,    /////      Usage Maximum 	//64 output usages total (1 to 64)
+    0x3F,    /////      Usage Maximum 	//64 output usages total (1 to 64)
+    0x81,    /////      Output (Data, Array, Abs): Instantiates output packet fields.  Uses same report size and count as "Input" fields, since nothing new/different was specified to the parser since the "Input" item.
+    0x00,    /////      Output (Data, Array, Abs): Instantiates output packet fields.  Uses same report size and count as "Input" fields, since nothing new/different was specified to the parser since the "Input" item.
+    0xC0,    ///
+
+};
+
+const uint8_t au8ReportDescriptor1[1] = {0};
+const uint8_t au8ReportDescriptor2[1] = {0};
+
+const stc_usbdevice_reportdescriptor_t astcReportDescriptors[3] =
+{
+    {(uint8_t*)au8ReportDescriptor0,sizeof(au8ReportDescriptor0)},
+    {(uint8_t*)au8ReportDescriptor1,sizeof(au8ReportDescriptor1)},
+    {(uint8_t*)au8ReportDescriptor2,sizeof(au8ReportDescriptor2)},
+};
+
+const stc_usbdevice_stringdescriptor_t pstcStringDescriptors[] =
+{
+{"Spansion",NULL},  
+{"Spansion HID Com + COM Port",NULL},  
+{"1.0",NULL},    
+{"Spansion HID Com",NULL},    
+{"Spansion USB Serial Port",NULL},
+};
+
+
+/*****************************************************************************/
+/* Global function prototypes ('extern', definition in C source)             */
+/*****************************************************************************/
+
+
+
+#endif /* __USBDESCRIPTORS_H__ */

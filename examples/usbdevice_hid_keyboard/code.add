@@ -1,0 +1,110 @@
+VAR[START]
+VAR[STOP]
+MAIN[START]
+MAIN[STOP]
+MAINLOOP[START]
+    /**************************************************************************************************/
+    /*                                                                                                */
+    /* START KEYBOARD EXAMPLE USAGE                                                                      */
+    /*                                                                                                */
+    /**************************************************************************************************/
+    #if (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON)
+        if (UsbDeviceHidKeyboard_IsConnected())
+        {
+            delay(300000);
+            UsbDeviceHidKeyboard_ClearModifierKey(0xFF);
+            delay(1000);
+            UsbDeviceHidKeyboard_SetModifierKey(MODIFIERKEY_RIGHT_GUI);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'r']);
+            delay(1000);
+            UsbDeviceHidKeyboard_ClearModifierKey(MODIFIERKEY_RIGHT_GUI);
+            delay(1000);
+            
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'n']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'o']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'t']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'e']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'p']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'a']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'d']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'\r']);
+            delay(50000);
+            
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'h']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'e']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'l']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'l']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'o']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)' ']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'w']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'o']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'r']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'l']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'d']);
+            delay(10000);
+            
+            delay(50000);
+            UsbDeviceHidKeyboard_SetModifierKey(MODIFIERKEY_RIGHT_GUI);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'r']);
+            delay(1000);
+            UsbDeviceHidKeyboard_ClearModifierKey(MODIFIERKEY_RIGHT_GUI);
+            delay(1000);
+            
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'w']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'w']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'w']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'.']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'s']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'p']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'a']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'n']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'s']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'i']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'o']);
+			delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'n']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'.']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'c']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'o']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'m']);
+            delay(1000);
+            UsbDeviceHidKeyboard_KeyPress(0, u8AsciiToKeyCode[(uint8_t)'\r']);
+            delay(3000);
+            
+            while(UsbDeviceHidKeyboard_IsConnected());
+        }
+    #endif /* FM_PERIPHERAL_USB_DEVICE_ENABLED == ON */
+MAINLOOP[STOP]

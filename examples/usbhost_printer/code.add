@@ -1,0 +1,42 @@
+INCLUDE[START]
+#if (USBHOSTPRINTER_ENABLED == ON)
+    #include "usbhostprinter.h" 
+#endif
+INCLUDE[STOP]
+VAR[START]
+#if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTPRINTER_ENABLED == ON))
+    boolean_t bHostPrinterConnected = FALSE;
+#endif
+VAR[STOP]
+MAIN[START]
+    #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTPRINTER_ENABLED == ON))
+        UsbHostPrinter_RegisterDriver();
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+        #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTPRINTER_ENABLED == ON))
+        /* USB Host Printer Driver API */
+        if (UsbHostPrinter_DriverActive())
+        {
+            if (bHostPrinterConnected == FALSE)
+            {
+                bHostPrinterConnected = TRUE;
+                #ifdef __UART_H__
+                puts("\r\n>> Printer Connected <<\r\n");
+                #endif /*  __UART_H__ */
+                UsbHostPrinter_SendPolled("Hello World!\r\n",14);
+                UsbHostPrinter_SendPolled("What's going on?\r\n",18);
+            }
+        }
+        else
+        {
+            if (bHostPrinterConnected == TRUE)
+            {
+                bHostPrinterConnected = FALSE;
+                #ifdef __UART_H__
+                puts("\r\n>> Printer Disconnected <<\r\n");
+                #endif /*  __UART_H__ */
+            }
+        }
+        #endif        
+MAINLOOP[STOP]

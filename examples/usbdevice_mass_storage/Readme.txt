@@ -1,0 +1,1 @@
+This example implements USB mass storage

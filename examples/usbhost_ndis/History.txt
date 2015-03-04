@@ -1,0 +1,3 @@
+ **   - 2014-01-31    1.0  MSc  First version
+ **   - 2014-09-03    1.1  MSc  Deinit routine fixed
+ **                             Switched to dynamic driver registering

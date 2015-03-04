@@ -1,0 +1,55 @@
+VAR[START]
+uint8_t u8JoystickXY = 0;
+VAR[STOP]
+MAIN[START]
+MAIN[STOP]
+MAINLOOP[START]
+
+    /**************************************************************************************************/
+    /*                                                                                                */
+    /* START JOYSTICK EXAMPLE USAGE                                                                   */
+    /*                                                                                                */
+    /**************************************************************************************************/
+    #if (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON)
+    if (UsbDeviceHidJoystick_IsConnected())
+    {
+        UsbDeviceHidJoystick_ChangeXY(u8JoystickXY,u8JoystickXY);
+        u8JoystickXY++;
+    }
+    
+    #if (defined(BUTTON_UP_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_UP_ENABLED)
+        else if (BUTTON_UP_PRESSED())
+        {
+            UsbDeviceHidJoystick_ChangeHatUp();
+        } 
+	#endif	
+	#if (defined(BUTTON_DOWN_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_DOWN_ENABLED)
+		else if (BUTTON_DOWN_PRESSED())
+        {
+            UsbDeviceHidJoystick_ChangeHatDown();
+        }
+	#endif
+    #if (defined(BUTTON_LEFT_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_LEFT_ENABLED) 	
+		else if (BUTTON_LEFT_PRESSED())
+        {
+            UsbDeviceHidJoystick_ChangeHatLeft();
+        }
+	#endif
+	#if (defined(BUTTON_RIGHT_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_RIGHT_ENABLED)	
+		else if (BUTTON_RIGHT_PRESSED())
+        {
+            UsbDeviceHidJoystick_ChangeHatRight();
+        } 
+	#endif
+        else {
+            UsbDeviceHidJoystick_ChangeHatNoDirection();
+        }
+    
+    #endif 
+    /**************************************************************************************************/
+    /*                                                                                                */
+    /* END JOYSTICK EXAMPLE USAGE                                                                     */
+    /*                                                                                                */
+    /**************************************************************************************************/
+
+MAINLOOP[STOP]

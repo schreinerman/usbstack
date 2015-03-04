@@ -1,0 +1,8 @@
+ **   - 2011-03-30    1.0  MSc  First version 
+ **   - 2011-08-24    1.1  MSc  Some fixes in X/Y calculation
+ **   - 2012-06-05    1.2  MSc  New verison for use with new USB driver for FM3 L3
+ **                             Rename HidMouse.c -> UsbHostHidMouse.c
+ **   - 2013-10-14    1.3  MSc  PDL support added
+ **   - 2014-07-30    1.5  MSc  Report descriptor parsing added
+ **   - 2014-09-03    1.6  MSc  Deinit routine fixed
+ **                             Switched to dynamic driver registering

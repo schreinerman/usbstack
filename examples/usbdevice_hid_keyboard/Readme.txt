@@ -1,0 +1,1 @@
+This example demonstrates an USB keyboard. 

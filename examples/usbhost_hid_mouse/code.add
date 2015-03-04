@@ -1,0 +1,53 @@
+INCLUDE[START]
+#if (USBHOSTHIDMOUSE_ENABLED == ON)
+    #include "UsbHostHidMouse.h"
+#endif
+INCLUDE[STOP]
+VAR[START]
+boolean_t bHostMouseConnected = FALSE;
+VAR[STOP]
+MAIN[START]
+    #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTHIDMOUSE_ENABLED == ON))
+        UsbHostHidMouse_RegisterDriver();
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+        #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTHIDMOUSE_ENABLED == ON))
+        /* USB Host Mouse Driver API */
+        if (UsbHostHidMouse_DriverActive())
+        {
+            stc_point_t stcPos;
+            if (bHostMouseConnected == FALSE)
+            {
+                bHostMouseConnected = TRUE;
+                #ifdef __UART_H__
+                puts("\r\n>> Mouse Connected <<\r\n");
+                #endif /*  __UART_H__ */
+            }
+            if (UsbHostHidMouse_Moved())
+            {
+                  #ifdef __UART_H__
+                  stcPos = UsbHostHidMouse_GetCurrentPosition();
+                  puts("X:");
+                  putdec(stcPos.u32X);
+                  puts(", Y:");
+                  putdec(stcPos.u32Y);
+                  puts(", Scroll: ");
+                  putdec(UsbHostHidMouse_GetCurrentScrollPosition());
+                  puts(", Buttons: ");
+                  puthex((uint32_t)UsbHostHidMouse_GetButtons(),2);
+                  puts("\r\n");
+                  #endif /*  __UART_H__ */
+           }
+        } else
+        {
+            if (bHostMouseConnected == TRUE)
+            {
+                bHostMouseConnected = FALSE;
+                #ifdef __UART_H__
+                puts("\r\n>> Mouse Disconnected <<\r\n");
+                #endif /*  __UART_H__ */
+            }
+        } /* end if .. else UsbHostHidMouse_DriverActive() */
+        #endif /* USBHOSTMOUSE_ENABLED */
+MAINLOOP[STOP]

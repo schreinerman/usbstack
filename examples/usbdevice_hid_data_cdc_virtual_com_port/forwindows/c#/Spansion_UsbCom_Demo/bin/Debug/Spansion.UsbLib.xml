@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Spansion.UsbLib</name>
+    </assembly>
+    <members>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom.devNotify">
+            <summary>
+            Device Notifier used for recognize device connection / disconnection
+            </summary>
+        </member>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom._AutoOpen">
+            <summary>
+            internal AutoOpen variable
+            </summary>
+        </member>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom._DriverType">
+            <summary>
+            Internal type of driver used to communicate
+            </summary>
+        </member>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom._Handler">
+            <summary>
+            Internal Driver Handler
+            </summary>
+        </member>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom._SerialNumber">
+            <summary>
+            Internal SerialNumber
+            </summary>
+        </member>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom._DeviceProductID">
+            <summary>
+            Internal Product ID
+            </summary>
+        </member>
+        <member name="F:Spansion.UsbLib.SpansionUsbCom._DeviceVendorID">
+            <summary>
+            Internal Vendor ID, 0x1F55 is Spansion Semiconductor Europe Vendor ID
+            </summary>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.LoadLibUsbDotNetDriver(System.Int32,System.Int32,System.String)">
+            <summary>
+            Load LibUsbDotNet Driver with finding the device via device vendor ID and product ID
+            </summary>
+            <param name="DeviceVendorID">Vendor ID of the device</param>
+            <param name="DeviceProductID">Product ID of the device</param>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.LoadSerialPortDriver(System.Int32,System.Int32,System.String)">
+            <summary>
+            Load SerialPort Driver
+            </summary>
+            <param name="DeviceVendorID">Vendor ID of the device</param>
+            <param name="DeviceProductID">Product ID of the device</param>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.LoadSpansionHidDriver(System.Int32,System.Int32,System.String)">
+            <summary>
+            Load Spansion HID Driver
+            </summary>
+            <param name="DeviceVendorID">Vendor ID of the device</param>
+            <param name="DeviceProductID">Product ID of the device</param>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.#ctor">
+            <summary>
+            Zero Constructor
+            </summary>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.Finalize">
+            <summary>
+            Destructor
+            </summary>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.#ctor(Spansion.UsbLib.Driver.DriverHandler)">
+            <summary>
+            Constructor with existing valid USB driver handler (optional)
+            </summary>
+            <param name="UsbDriverHandler"></param>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.Open">
+            <summary>
+            Open USB Device with the specified USB Driver
+            </summary>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.Close">
+            <summary>
+            Close an USB device
+            </summary>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.Send(System.Int32,System.Byte[],System.Int32)">
+            <summary>
+            Used to send data via a specified endpoint
+            </summary>
+            <param name="EndpointNumber">Number of Endpoint</param>
+            <param name="Buffer">Buffer with Data</param>
+            <param name="Timeout">Timeout in ms</param>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.Receive(System.Int32,System.Byte[]@,System.Int32)">
+            <summary>
+            Used to read data from an endpoint. If no data can be read from the specified endpoint
+            in the specified time, the buffer will be null.
+            If the data queue is enabled, data will be read from the data queue, if data is stored.
+            Otherwise it will be waited for data.
+            </summary>
+            <param name="EndpointNumber">Number of Endpoint</param>
+            <param name="Buffer">Buffer with Data</param>
+            <param name="Timeout">Timeout in ms</param>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.GetReceivedSize(System.Int32)">
+            <summary>
+            Gets the received data size of the received queue.
+            </summary>
+            <param name="EndpointNumber">Endpoint Number</param>
+            <returns>-1 if the endpoint is not available for reading</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.EnableReceivedQueue(System.Int32)">
+            <summary>
+            Enables data queue for receiving data.
+            </summary>
+            <param name="EndpointNumber">Endpoint Number</param>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.DisableReceivedQueue(System.Int32)">
+            <summary>
+            Enables data queue for receiving data.
+            </summary>
+            <param name="EndpointNumber">Endpoint Number</param>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.FlushQueue(System.Int32)">
+            <summary>
+            Used to flush the received queue
+            </summary>
+            <param name="EndpointNumber">Endpoint Number</param>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.IsValid">
+            <summary>
+            Check if a valid driver handler exists
+            </summary>
+            <returns>true if it is valid</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.IsOpen">
+            <summary>
+            Retrieves if the USB device was opened
+            </summary>
+            <returns>false if the driver couldn't be loaded or the device is not connected</returns>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom._DeviceDisconnected(System.Object,Spansion.UsbLib.Events.DeviceNotify.EventUsbDeviceRemoval)">
+            <summary>
+            Event Handler for detecting a device connection
+            </summary>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom._DeviceConnected(System.Object,Spansion.UsbLib.Events.DeviceNotify.EventUsbDeviceArrival)">
+            <summary>
+            Event Handler for detecting a device disconnection
+            </summary>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.DataTransferred(System.Object,Spansion.UsbLib.Events.DataTransferredEvent)">
+            <summary>
+            Data Transferred Event
+            </summary>
+            <param name="sender">sender</param>
+            <param name="e">arguments</param>
+        </member>
+        <member name="M:Spansion.UsbLib.SpansionUsbCom.UpdateDriverHandler">
+            <summary>
+            Update Handler procedure
+            </summary>
+        </member>
+        <member name="P:Spansion.UsbLib.SpansionUsbCom.AutoOpen">
+            <summary>
+            Device will be automatically opened/closed during PnP
+            </summary>
+        </member>
+        <member name="P:Spansion.UsbLib.SpansionUsbCom.DriverType">
+            <summary>
+            Type of driver used to communicate
+            </summary>
+        </member>
+        <member name="P:Spansion.UsbLib.SpansionUsbCom.Handler">
+            <summary>
+            Driver handling the USB communication
+            </summary>
+        </member>
+        <member name="P:Spansion.UsbLib.SpansionUsbCom.SerialNumber">
+            <summary>
+            USB Device SerialNumber
+            </summary>
+        </member>
+        <member name="P:Spansion.UsbLib.SpansionUsbCom.DeviceProductID">
+            <summary>
+            USB Device Product ID
+            </summary>
+        </member>
+        <member name="P:Spansion.UsbLib.SpansionUsbCom.DeviceVendorID">
+            <summary>
+            Vendor ID. The initial ID is 0x1F55 Spansion Semiconductor Europe Vendor ID
+            </summary>
+        </member>
+        <member name="E:Spansion.UsbLib.SpansionUsbCom.DeviceConnected">
+            <summary>
+            Event Handler for detecting a device connection
+            </summary>
+        </member>
+        <member name="E:Spansion.UsbLib.SpansionUsbCom.DeviceDisconnected">
+            <summary>
+            Event Handler for detecting a device disconnection
+            </summary>
+        </member>
+        <member name="E:Spansion.UsbLib.SpansionUsbCom.OnDataTransferred">
+            <summary>
+            Event Handler for Data Transferred
+            </summary>
+        </member>
+    </members>
+</doc>

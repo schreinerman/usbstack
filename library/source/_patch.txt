@@ -1,0 +1,18 @@
+FILE Main.c
+AFTER #include "mcu.h"
+ADD #include "usbconfig.h"
+ADD #include "usb.h"
+ADD #ifndef USB_DISBALE_DEVICE_FUNCTIONALITY
+ADD #include "usbdevice.h"
+ADD #include "UsbDeviceClassDummy.h"
+ADD #endif
+ADD #ifndef USB_DISBALE_HOST_FUNCTIONALITY
+ADD #include "usbhost.h"
+ADD #include "usbclasssupervisor.h"
+ADD #endif 
+FPATCHEND
+FILE Main.c
+AFTER int32_t main
+JUMP 1
+ADD   UsbConfig_UsbInit();
+FPATCHEND

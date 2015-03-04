@@ -1,0 +1,28 @@
+VAR[START]
+void PrinterDataOutput(uint8_t* pu8DataBuffer, uint32_t u32DataLength)
+{
+    uint32_t i;
+    for(i = 0;i < u32DataLength;i++)
+    {
+        /* Add line here to send bytewise data to printer */
+    }
+}
+
+void UsbDevicePrinterDataReceived(uint8_t* pu8DataBuffer, uint32_t u32DataLength)
+{
+    PrinterDataOutput(pu8DataBuffer,u32DataLength);
+}
+
+void UsbDeviceCdcDataReceived(uint8_t* pu8DataBuffer, uint32_t u32DataLength)
+{
+    PrinterDataOutput(pu8DataBuffer,u32DataLength);
+}
+VAR[STOP]
+MAIN[START]
+    #if (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON)
+        UsbDevicePrinter_SetReceivedCallback(UsbDevicePrinterDataReceived);
+        UsbDeviceCdcCom_SetReceivedCallback(UsbDeviceCdcDataReceived);
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+MAINLOOP[STOP]

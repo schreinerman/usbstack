@@ -1,0 +1,10 @@
+- 2009-08-31    1.0  MSc  First version  (works with 16FX)
+- 2010-04-16    1.1  MSc  new USB library added - API had changed
+- 2011-08-30    1.2  MSc  bug fixes while echo data
+                          added UsbDeviceCdcCom_SetEchoAtSeperatorOnly for
+                          echo data only after seperator received
+- 2012-07-24    1.3  MSc  Version for USB Library >= FM3 
+- 2012-11-26    1.4  MSc  Data received routine added 
+- 2013-01-30    1.5  MSc  DMA routines added 
+- 2013-04-24    1.6  MSc  Data sent handle added
+- 2013-10-14    1.7  MSc  PDL support added

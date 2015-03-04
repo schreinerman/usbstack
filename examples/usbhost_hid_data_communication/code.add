@@ -1,0 +1,14 @@
+INCLUDE[START]
+#if (USBHOSTHIDCOM_ENABLED == ON)
+    #include "UsbHostHidCom.h"
+#endif
+INCLUDE[STOP]
+VAR[START]
+VAR[STOP]
+MAIN[START]
+    #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTHIDCOM_ENABLED == ON))
+        UsbHostHidCom_RegisterDriver();
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+MAINLOOP[STOP]

@@ -1,0 +1,70 @@
+﻿VAR[START]
+
+/*      START GLOBAL VARIABLES FOR VIRTUAL COM PORT EXAMPLE       */
+
+ char_t pu8DeviceCdcReceiveBuffer[512];
+ uint32_t u32DeviceCdcReceiveSize;
+ boolean_t bDeviceCdcComConnected;
+/*      END GLOBAL VARIABLES FOR VIRTUAL COM PORT EXAMPLE        */
+
+VAR[STOP]
+MAIN[START]
+     UsbDeviceCdcCom_SetSeparator('\r');    // there is the possibility to set end of buffer by a seperator
+     UsbDeviceCdcCom_SetEchomode(TRUE); // all input shall be echoed
+MAIN[STOP]
+MAINLOOP[START]
+
+       /**************************************************************************************************/
+       /*                                                                                                */
+       /* START VIRTUAL COM PORT EXAMPLE USAGE                                                           */
+       /*                                                                                                */
+       /**************************************************************************************************/
+       #if (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON)
+       /* waiting for a connection */
+       if (bDeviceCdcComConnected != UsbDeviceCdcCom_IsConnected())
+       {
+           bDeviceCdcComConnected = UsbDeviceCdcCom_IsConnected();
+           if (bDeviceCdcComConnected == TRUE)
+           {
+               #ifdef _SEVENSEG_API_MSC_
+                   SEVENSEG_NUMBER(1);
+               #endif
+	
+               /* sending welcome message after connection*/
+               UsbDeviceCdcCom_SendString("\r\n");
+               UsbDeviceCdcCom_SendString("Welcome to Spansion Virtual Comm Port Example!\r\n");
+               UsbDeviceCdcCom_SendString("waiting for your message:\r\n");
+           }
+           else
+           {
+               #ifdef _SEVENSEG_API_MSC_
+	               SEVENSEG_NUMBER(0);
+               #endif 
+           }
+       }
+	   
+       if (UsbDeviceCdcCom_IsConnected()) 
+       {
+           if (UsbDeviceCdcCom_ReceivedLength() > 0) {
+               /* receive data from buffer */
+               u32DeviceCdcReceiveSize = UsbDeviceCdcCom_ReceiveBuffer((uint8_t *)pu8DeviceCdcReceiveBuffer); //this clears also the receive buffer
+               pu8DeviceCdcReceiveBuffer[u32DeviceCdcReceiveSize] = '\0';    //adding zero termination to string
+         
+               /* print16_t out pu8DeviceCdcReceiveBuffer through Virtual Comm Port */
+               UsbDeviceCdcCom_SendByte('\n');
+               UsbDeviceCdcCom_SendString("Received String: ");
+               UsbDeviceCdcCom_SendString(pu8DeviceCdcReceiveBuffer);
+               UsbDeviceCdcCom_SendString("\r\n");
+	           #ifdef _SEVENSEG_API_MSC_
+	               SEVENSEG_NUMBER(u32DeviceCdcReceiveSize);
+               #endif    
+           }  
+       }  
+       #endif
+       /**************************************************************************************************/
+       /*                                                                                                */
+       /* END VIRTUAL COM PORT EXAMPLE USAGE                                                             */
+       /*                                                                                                */
+       /**************************************************************************************************/
+
+MAINLOOP[STOP]

@@ -1,0 +1,1 @@
+This example demonstrates USB printer class with CDC

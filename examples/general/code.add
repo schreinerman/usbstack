@@ -1,0 +1,63 @@
+INCLUDE[START]
+/* Includes for USB */
+#include "usb.h"
+#if FM_PERIPHERAL_USB_DEVICE_ENABLED == ON
+    #include "usbdevice.h"
+#endif
+#if FM_PERIPHERAL_USB_HOST_ENABLED == ON
+    #include "usbhost.h"
+    #include "usbhostclasssupervisor.h"
+#endif 
+#if (USBDEVICECDCCOM_ENABLED == ON)
+    #include "UsbDeviceCdcCom.h"
+#endif
+#if (USBDEVICEHIDCOM_ENABLED == ON)
+    #include "UsbDeviceHidCom.h"
+#endif
+#if (USBDEVICEHIDJOYSTICK_ENABLED == ON)
+    #include "UsbDeviceHidJoystick.h"
+#endif
+#if (USBDEVICEHIDKEYBOARD_ENABLED == ON)
+    #include "UsbDeviceHidKeyboard.h"         
+#endif 
+#if (USBDEVICEHIDMOUSE_ENABLED == ON)
+    #include "UsbDeviceHidMouse.h"
+#endif    
+#if (USBDEVICELIBUSB_ENABLED == ON)
+    #include "UsbDeviceLibUsb.h"
+#endif
+#if (USBDEVICEPRINTER_ENABLED == ON)
+    #include "UsbDevicePrinter.h"
+#endif
+#if (USBDEVICEMASSSTORAGE_ENABLED == ON)
+    #include "UsbDeviceMassStorage.h"
+#endif 
+/* End of includes for USB */
+INCLUDE[STOP]
+VAR[START]
+/* START ADDITIONAL PROCEDURES   */
+#ifndef _DELAYLOOP_
+#define _DELAYLOOP_
+static void delay(volatile uint32_t u32TimeOut)
+{
+   volatile uint32_t i;
+   u32TimeOut = u32TimeOut * 100;
+   while(u32TimeOut--)
+   {
+       for(i=10;i>0;i--)
+       {
+       }
+   }
+}
+#endif /* !defined(_DELAYLOOP_) */
+/* END ADDITIONAL PROCEDURES   */
+
+VAR[STOP]
+MAIN[START]
+    UsbConfig_UsbInit();
+MAIN[STOP]
+MAINLOOP[START]
+        #if (((USB_USE_PDL == 1) || (USB_USE_L3 == 1) || (USB_USE_EXT_INT == 0)) && (!defined(BOARD_USB) || (BOARD_USB == OFF)))
+        UsbConfig_SwitchMode();  // switch USB<n> if required, otherwise, initialize USB host/device mode
+        #endif
+MAINLOOP[STOP]

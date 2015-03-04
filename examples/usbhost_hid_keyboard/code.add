@@ -1,0 +1,46 @@
+INCLUDE[START]
+#if (USBHOSTHIDKEYBOARD_ENABLED == ON)
+    #include "UsbHostHidKeyboard.h"
+#endif
+INCLUDE[STOP]
+VAR[START]
+boolean_t bHostKeyboardConnected = FALSE;
+VAR[STOP]
+MAIN[START]
+    #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTHIDKEYBOARD_ENABLED == ON))
+        UsbHostHidKeyboard_RegisterDriver();
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+        
+        #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTHIDKEYBOARD_ENABLED == ON))
+        /* USB Host Keyboard Driver API */
+        if (UsbHostHidKeyboard_DriverActive())
+        {
+            char_t c;
+            if (bHostKeyboardConnected == FALSE)
+            {
+                bHostKeyboardConnected = TRUE;
+                #ifdef __UART_H__
+                puts("\r\n>> Keyboard Connected <<\r\n");
+                #endif /*  __UART_H__ */
+            }
+            c = UsbHostHidKeyboard_GetCh(100);
+            if (c != 0)
+            {
+                #ifdef __UART_H__
+                putch(c);
+                #endif /*  __UART_H__ */
+            }
+        } else
+        {
+            if (bHostKeyboardConnected == TRUE)
+            {
+                bHostKeyboardConnected = FALSE;
+                #ifdef __UART_H__
+                puts("\r\n>> Keyboard Disconnected <<\r\n");
+                #endif /*  __UART_H__ */
+            }
+        } /* end if .. else UsbHostHidKeyboard_DriverActive() */
+        #endif /* USBHOSTKEYBOARD_ENABLED */
+MAINLOOP[STOP]

@@ -1,0 +1,14 @@
+
+HKEY_LOCAL_MACHINE\Hardware\Description\System\CentralProcessor\0
+    Component Information    REG_BINARY    00000000000000000000000000000000
+    Identifier    REG_SZ    Intel64 Family 6 Model 42 Stepping 7
+    Configuration Data    REG_FULL_RESOURCE_DESCRIPTOR    FFFFFFFFFFFFFFFF0000000000000000
+    ProcessorNameString    REG_SZ    Intel(R) Core(TM) i5-2410M CPU @ 2.30GHz
+    VendorIdentifier    REG_SZ    GenuineIntel
+    FeatureSet    REG_DWORD    0x21193ffe
+    ~MHz    REG_DWORD    0x8f6
+    Update Signature    REG_BINARY    0000000015000000
+    Update Status    REG_DWORD    0x2
+    Previous Update Signature    REG_BINARY    0000000015000000
+    Platform ID    REG_DWORD    0x10
+

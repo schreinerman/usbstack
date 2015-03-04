@@ -1,0 +1,15 @@
+INCLUDE[START]
+#if (USBHOSTNDIS_ENABLED == ON)
+    #include "usbhostndis.h" 
+#endif
+INCLUDE[STOP]
+VAR[START]
+VAR[STOP]
+MAIN[START]
+    #if ((FM_PERIPHERAL_USB_HOST_ENABLED == ON) && (USBHOSTNDIS_ENABLED == ON))
+        UsbHostNdis_RegisterDriver();
+    #endif
+MAIN[STOP]
+MAINLOOP[START]
+        
+MAINLOOP[STOP]

@@ -1,0 +1,2 @@
+- 2012-07-20    1.0  MSc  First version for FM3 USB library
+- 2013-10-14    1.1  MSc  PDL support added

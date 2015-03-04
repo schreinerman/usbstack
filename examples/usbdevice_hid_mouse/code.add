@@ -1,0 +1,68 @@
+VAR[START]
+#if (defined(BUTTON_CENTER_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_CENTER_ENABLED)
+    volatile boolean_t bMouseLeftButton = FALSE;
+#endif
+VAR[STOP]
+MAIN[START]
+MAIN[STOP]
+MAINLOOP[START]
+    #if (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON)
+	
+        #if defined(SEVENSEG_NUMBER) //if SK has seven segment display
+            if (UsbDeviceHidMouse_IsConnected())
+            {
+                SEVENSEG_NUMBER(11); // If USB is configured, display 11
+            }
+            else
+            {
+                SEVENSEG_NUMBER(0); // If USB is disconnected, display 00
+            }
+        #endif /* defined(SEVENSEG_NUMBER) */
+		
+	    if (UsbDeviceHidMouse_IsConnected())
+        {
+            #if (defined(BUTTON_LEFT_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_LEFT_ENABLED) 	
+                if (BUTTON_LEFT_PRESSED())
+                {
+                    UsbDeviceHidMouse_Move(-10,0);
+                }
+            #endif
+			
+	        #if (defined(BUTTON_RIGHT_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_RIGHT_ENABLED)
+                if (BUTTON_RIGHT_PRESSED())
+                {
+                    UsbDeviceHidMouse_Move(10,0);
+                }
+            #endif
+			
+            #if (defined(BUTTON_UP_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_UP_ENABLED)
+                if (BUTTON_UP_PRESSED())
+                {
+                    UsbDeviceHidMouse_Move(0,-10);
+                }
+	        #endif
+			
+	        #if (defined(BUTTON_DOWN_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_DOWN_ENABLED)
+                if (BUTTON_DOWN_PRESSED())
+                {
+                    UsbDeviceHidMouse_Move(0,10);
+                }
+            #endif
+            
+            #if (defined(BUTTON_CENTER_PRESSED) && !defined(__BOARDDEF_H__)) || defined(BUTTON_CENTER_ENABLED)
+                if (bMouseLeftButton != BUTTON_CENTER_PRESSED())
+                {
+                    bMouseLeftButton = BUTTON_CENTER_PRESSED();
+                    if (bMouseLeftButton)
+                    {
+                        UsbDeviceHidMouse_LeftDown();
+                    }
+                    else
+                    {
+                        UsbDeviceHidMouse_LeftUp();
+                    }
+                }
+           #endif
+        }
+    #endif /* (FM_PERIPHERAL_USB_DEVICE_ENABLED == ON) */
+MAINLOOP[STOP]

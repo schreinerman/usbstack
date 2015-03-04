@@ -1,0 +1,185 @@
+VAR[START]
+
+/*      START GLOBAL VARIABLES FOR HID EXAMPLE       */
+ #include "UsbDeviceHidCom.h"
+
+ uint8_t pu8TestDeviceHid[64] = "Testmessage";
+ uint8_t pu8BufferDeviceHid[64];
+ uint8_t u8ButtonsDeviceHid,u8ButtonsDeviceHidTemp;
+ uint32_t u32SizeDeviceHid = 0;
+ uint16_t u16AdcTemp;
+/*      END GLOBAL VARIABLES FOR HID EXAMPLE        */
+
+/*      START GLOBAL VARIABLES FOR VIRTUAL COM PORT EXAMPLE       */
+
+ char_t pu8DeviceCdcReceiveBuffer[512];
+ uint32_t u32DeviceCdcReceiveSize;
+ boolean_t bDeviceCdcComConnected;
+/*      END GLOBAL VARIABLES FOR VIRTUAL COM PORT EXAMPLE        */
+
+VAR[STOP]
+MAIN[START]
+     UsbDeviceCdcCom_SetSeparator('\r');    // there is the possibility to set end of buffer by a seperator
+     UsbDeviceCdcCom_SetEchomode(TRUE); // all input shall be echoed
+MAIN[STOP]
+MAINLOOP[START]
+
+         /**************************************************************************************************/
+         /*                                                                                                */
+         /* START  HID  EXAMPLE USAGE                                                                      */
+         /*                                                                                                */
+         /* Information:                                                                                   */
+         /* For HID usage, 64 byte buffers will be used in both directions. Please be sure, used buffers   */
+         /* are always 64 bytes!                                                                           */
+         /*                                                                                                */
+         /**************************************************************************************************/
+         #if (!defined(USB_DISBALE_DEVICE_FUNCTIONALITY))
+         /* stores pointer to received data; returns 0 if nothing was received */
+         u32SizeDeviceHid = UsbDeviceHidCom_GetReceivedData(pu8BufferDeviceHid); 
+    
+         /* if data was received */
+         if (u32SizeDeviceHid != 0)              
+         {
+             switch(pu8BufferDeviceHid[0])
+             {
+                 case 0x55: // if first byte of received data is 0x55, return prestored data
+                     UsbDeviceHidCom_Send(pu8TestDeviceHid,UsbPOLL);
+                     break;
+                     
+                 #if defined(LED_DUTY)
+                 case 0x66:    
+                     LED_DUTY(LED_RED,pu8BufferDeviceHid[1]);
+                     LED_DUTY(LED_GREEN,pu8BufferDeviceHid[2]);
+                     LED_DUTY(LED_BLUE,pu8BufferDeviceHid[3]);
+                     break;
+                 #endif
+                 
+                 #if defined(SEVENSEG_NUMBER) // board support for 7 segment display was added
+                 case 0x77:    
+                     SEVENSEG_NUMBER(pu8BufferDeviceHid[1]);
+                     break;
+                 #endif
+                 
+                 #ifdef _SK_FM3_48PMC_USBSTICK_
+                 case 0xaa:
+                     u16AdcTemp = SensorAdc_Read(pu8BufferDeviceHid[1]);
+                     pu8BufferDeviceHid[0] = 0xAA;
+                     pu8BufferDeviceHid[1] = (uint8_t)((u16AdcTemp >> 8) & 0xFF);
+                     pu8BufferDeviceHid[2] = (uint8_t)((u16AdcTemp) & 0xFF);
+                     UsbDeviceHidCom_Send(pu8BufferDeviceHid,UsbPOLL);
+                     break;
+                 #endif
+                 
+                 #ifdef _SK_FM3_48PMC_USBSTICK_
+                 case 0xff:
+                     Uart_Puts(0,(char_t*)(pu8BufferDeviceHid + 1));
+                     Uart_Puts(0,"\n");
+                     break;
+                 #endif
+                 
+                 default:   // if first byte of received data is "any", echo received data
+                     UsbDeviceHidCom_Send(pu8BufferDeviceHid,UsbPOLL); //echo received data
+                     break;
+             }
+         }
+         #if defined(BUTTON_CENTER_PRESSED)
+            u8ButtonsDeviceHidTemp = 0;
+            if (BUTTON_CENTER_PRESSED())
+            {
+                u8ButtonsDeviceHidTemp += 1;
+                u8ButtonsDeviceHidTemp += 2;
+            }
+            if (u8ButtonsDeviceHidTemp != u8ButtonsDeviceHid)
+            {
+                u8ButtonsDeviceHid = u8ButtonsDeviceHidTemp;
+                pu8BufferDeviceHid[0] = 0xBB;
+                pu8BufferDeviceHid[1] = u8ButtonsDeviceHid;
+                UsbDeviceHidCom_Send(pu8BufferDeviceHid,UsbPOLL);
+            }
+         #endif    
+		 
+         #if defined(BUTTON_LEFT_PRESSED) || defined(BUTTON_RIGHT_PRESSED)
+                 u8ButtonsDeviceHidTemp = 0;
+				 
+				 #if defined(BUTTON_LEFT_PRESSED)
+                     if (BUTTON_LEFT_PRESSED())
+                     {
+                         u8ButtonsDeviceHidTemp += 1;
+                     }
+			     #endif
+				 
+				 #if defined(BUTTON_RIGHT_PRESSED)
+                     if (BUTTON_RIGHT_PRESSED())
+                     {
+                         u8ButtonsDeviceHidTemp += 2;
+                     }
+                     if (u8ButtonsDeviceHidTemp != u8ButtonsDeviceHid)
+                     {
+                         u8ButtonsDeviceHid = u8ButtonsDeviceHidTemp;
+                         pu8BufferDeviceHid[0] = 0xBB;
+                         pu8BufferDeviceHid[1] = u8ButtonsDeviceHid;
+                         UsbDeviceHidCom_Send(pu8BufferDeviceHid,UsbPOLL);
+                     }
+			    #endif
+         #endif
+         #endif
+         /**************************************************************************************************/
+         /*                                                                                                */
+         /* END  HID  EXAMPLE USAGE                                                                        */
+         /*                                                                                                */
+         /**************************************************************************************************/
+
+       /**************************************************************************************************/
+       /*                                                                                                */
+       /* START VIRTUAL COM PORT EXAMPLE USAGE                                                           */
+       /*                                                                                                */
+       /**************************************************************************************************/
+       #if (!defined(USB_DISBALE_DEVICE_FUNCTIONALITY))
+       /* waiting for a connection */
+       if (bDeviceCdcComConnected != UsbDeviceCdcCom_IsConnected())
+       {
+           bDeviceCdcComConnected = UsbDeviceCdcCom_IsConnected();
+           if (bDeviceCdcComConnected == TRUE)
+           {
+               #ifdef _SEVENSEG_API_MSC_
+                   SEVENSEG_NUMBER(1);
+               #endif
+	
+               /* sending welcome message after connection*/
+               UsbDeviceCdcCom_SendString("\r\n");
+               UsbDeviceCdcCom_SendString("Welcome to Spansion Virtual Comm Port Example!\r\n");
+               UsbDeviceCdcCom_SendString("waiting for your message:\r\n");
+           }
+           else
+           {
+               #ifdef _SEVENSEG_API_MSC_
+	               SEVENSEG_NUMBER(0);
+               #endif 
+           }
+       }
+	   
+       if (UsbDeviceCdcCom_IsConnected()) 
+       {
+           if (UsbDeviceCdcCom_ReceivedLength() > 0) {
+               /* receive data from buffer */
+               u32DeviceCdcReceiveSize = UsbDeviceCdcCom_ReceiveBuffer((uint8_t *)pu8DeviceCdcReceiveBuffer); //this clears also the receive buffer
+               pu8DeviceCdcReceiveBuffer[u32DeviceCdcReceiveSize] = '\0';    //adding zero termination to string
+         
+               /* print16_t out pu8DeviceCdcReceiveBuffer through Virtual Comm Port */
+               UsbDeviceCdcCom_SendByte('\n');
+               UsbDeviceCdcCom_SendString("Received String: ");
+               UsbDeviceCdcCom_SendString(pu8DeviceCdcReceiveBuffer);
+               UsbDeviceCdcCom_SendString("\r\n");
+	           #ifdef _SEVENSEG_API_MSC_
+	               SEVENSEG_NUMBER(u32DeviceCdcReceiveSize);
+               #endif    
+           }  
+       }  
+       #endif
+       /**************************************************************************************************/
+       /*                                                                                                */
+       /* END VIRTUAL COM PORT EXAMPLE USAGE                                                             */
+       /*                                                                                                */
+       /**************************************************************************************************/
+
+MAINLOOP[STOP]
